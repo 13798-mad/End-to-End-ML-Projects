@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Personality Predictor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://png.pngtree.com/thumb_back/fh260/background/20231014/pngtree-abstract-background-vibrant-acrylic-painting-on-textured-canvas-image_13620164.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        form {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 10px;
+            width: 400px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #007BFF;
+            border: none;
+            color: white;
+            padding: 12px;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: green;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <form id="predict-form">
+        <h2>Predict Your Personality</h2>
+        <label>Time Spent Alone</label>
+        <input type="number" name="Time_spent_Alone" required>
+
+        <label>Stage Fear Level</label>
+        <select name="Stage_fear" required>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select>
+
+        <label>Social Event Attendance Frequency</label>
+        <input type="number" name="Social_event_attendance" required>
+
+        <label>Going Outside Frequency</label>
+        <input type="number" name="Going_outside" required>
+
+        <label>Drained After Socializing</label>
+        <select name="Drained_after_socializing" required>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select>
+
+        <label>Friends Circle Size</label>
+        <input type="number" name="Friends_circle_size" required>
+
+        <label>Post Frequency</label>
+        <input type="number" name="Post_frequency" required>
+
+        <button type="submit">Predict</button>
+        <div class="result" id="result"></div>
+    </form>
+
+    <script>
+        const form = document.getElementById("predict-form");
+        const resultDiv = document.getElementById("result");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = isNaN(value) ? value : Number(value);
+            });
+
+            const response = await fetch("/predict", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+            resultDiv.textContent = result.prediction ? `You are likely an: ${result.prediction}` : result.error;
+        });
+    </script>
+</body>
+</html>
