@@ -7,8 +7,8 @@ from sklearn.preprocessing import StandardScaler
 with open("model.pkl", "rb") as file:
     model = pickle.load(file)
 
-st.title("Crop Recommendation System 🌾")
-st.write("Enter the following soil and weather parameters to get crop suggestions:")
+st.title("🌾 Crop Recommendation System")
+st.markdown("Enter soil and environmental conditions to predict the best crop to grow.")
 
 # Input fields
 N = st.number_input("Nitrogen (N)", min_value=0.0)
@@ -23,8 +23,8 @@ if st.button("Predict Crop"):
     try:
         features = np.array([[N, P, K, temperature, humidity, ph, rainfall]])
         scaler = StandardScaler()
-        features_scaled = scaler.fit_transform(features)  # Or load saved scaler if needed
-        prediction = model.predict(features_scaled)[0]
+        scaled = scaler.fit_transform(features)  # If you have a saved scaler, use that instead
+        prediction = model.predict(scaled)[0]
         st.success(f"🌱 Recommended Crop: **{prediction}**")
     except Exception as e:
-        st.error(f"Error: {e}")
+        st.error(f"❌ Error: {e}")
